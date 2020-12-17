@@ -11,37 +11,48 @@ class CountDownTimer {
       timer: document.querySelector(selector),
       futureDate: new Date(targetDate),
     };
-
-    this.timerId = setInterval(function () {
-      this.currentDate = Date.now();
-      this.futureTime = targetDate;
-      this.countTimer = this.futureTime - this.currentDate;
-      updateClockFace(this.countTimer);
+    this.intervalId = null;
+  }
+  timer() {
+    if (this.intervalId <= 0) {
+      this.updateClockFace(0);
+    }
+    this.intervalId = setInterval(() => {
+      console.log(this.intervalId);
+      const currentTime = Date.now();
+      const resDate = this.refs.futureDate - currentTime;
+      this.updateClockFace(resDate);
     }, 1000);
+  }
+
+  updateClockFace(time) {
+    const days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
+    const hours = this.pad(
+      Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    );
+    const mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
+    const secs = this.pad(Math.floor((time % (1000 * 60)) / 1000));
+
+    this.creatTime(days, hours, mins, secs);
+  }
+
+  creatTime(days, hours, mins, secs) {
+    refs.days.textContent = days;
+    refs.hours.textContent = hours;
+    refs.mins.textContent = mins;
+    refs.secs.textContent = secs;
+
+    return `${days}:${hours}:${mins}:${secs}`;
+  }
+
+  pad(value) {
+    return String(value).padStart(2, "0");
   }
 }
 
-function updateClockFace(time) {
-  const days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-  refs.days.textContent = days;
-
-  const hours = pad(
-    Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-  );
-  refs.hours.textContent = hours;
-
-  const mins = pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-  refs.mins.textContent = mins;
-
-  const secs = pad(Math.floor((time % (1000 * 60)) / 1000));
-  refs.secs.textContent = secs;
-}
-
-function pad(value) {
-  return String(value).padStart(2, "0");
-}
-
-new CountDownTimer({
+const time = new CountDownTimer({
   selector: "#timer-1",
   targetDate: new Date("Dec 31, 2020"),
 });
+
+time.timer();
