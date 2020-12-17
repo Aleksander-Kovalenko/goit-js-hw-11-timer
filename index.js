@@ -17,14 +17,19 @@ class CountDownTimer {
     if (this.intervalId <= 0) {
       this.updateClockFace(0);
     }
+
+    this.toCountTime();
     this.intervalId = setInterval(() => {
-      console.log(this.intervalId);
-      const currentTime = Date.now();
-      const resDate = this.refs.futureDate - currentTime;
-      this.updateClockFace(resDate);
+      this.toCountTime();
     }, 1000);
   }
 
+  toCountTime() {
+    const currentTime = Date.now();
+    const resDate = this.refs.futureDate - currentTime;
+    console.log(resDate);
+    return this.updateClockFace(resDate);
+  }
   updateClockFace(time) {
     const days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
     const hours = this.pad(
